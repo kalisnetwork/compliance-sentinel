@@ -1,0 +1,85 @@
+{
+    "name": "compliance-sentinel-file-save",
+    "version": "1.0.0",
+    "description": "Real-time security analysis on file save",
+    "author": "Compliance Sentinel Team",
+    "triggers": [
+        {
+            "event": "file:save",
+            "patterns": [
+                "*.py",
+                "*.js",
+                "*.ts",
+                "*.java",
+                "*.go",
+                "*.php",
+                "*.rb",
+                "*.cs",
+                "*.cpp",
+                "*.c",
+                "*.h",
+                "*.hpp"
+            ],
+            "exclude": [
+                "node_modules/**",
+                ".git/**",
+                "__pycache__/**",
+                "*.pyc",
+                "*.pyo",
+                "*.pyd",
+                ".pytest_cache/**",
+                "build/**",
+                "dist/**"
+            ]
+        }
+    ],
+    "execution": {
+        "type": "async",
+        "timeout": 30,
+        "priority": 8,
+        "debounce": 1000,
+        "command": "compliance-sentinel",
+        "args": [
+            "analyze",
+            "--format",
+            "kiro",
+            "--no-feedback",
+            "${file}"
+        ],
+        "environment": {
+            "COMPLIANCE_SENTINEL_MODE": "hook",
+            "COMPLIANCE_SENTINEL_IDE": "kiro"
+        }
+    },
+    "feedback": {
+        "type": "inline",
+        "format": "kiro-diagnostics",
+        "severity_mapping": {
+            "critical": "error",
+            "high": "error",
+            "medium": "warning",
+            "low": "info",
+            "info": "hint"
+        },
+        "show_quick_fixes": true,
+        "show_code_actions": true,
+        "show_hover_info": true
+    },
+    "configuration": {
+        "enabled": true,
+        "auto_fix": false,
+        "show_progress": true,
+        "cache_results": true,
+        "max_issues_per_file": 50
+    },
+    "metadata": {
+        "category": "security",
+        "tags": [
+            "security",
+            "compliance",
+            "static-analysis"
+        ],
+        "documentation": "https://compliance-sentinel.readthedocs.io/hooks/file-save",
+        "support": "https://github.com/compliance-sentinel/compliance-sentinel/issues"
+    }
+}

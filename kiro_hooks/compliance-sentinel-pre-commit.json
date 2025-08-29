@@ -1,0 +1,100 @@
+{
+    "name": "compliance-sentinel-pre-commit",
+    "version": "1.0.0",
+    "description": "Comprehensive security analysis before commit",
+    "author": "Compliance Sentinel Team",
+    "triggers": [
+        {
+            "event": "git:pre-commit",
+            "patterns": [
+                "*.py",
+                "*.js",
+                "*.ts",
+                "*.java",
+                "*.go",
+                "*.php",
+                "*.rb",
+                "*.cs",
+                "*.cpp",
+                "*.c",
+                "*.h",
+                "*.hpp",
+                "requirements.txt",
+                "package.json",
+                "pom.xml",
+                "build.gradle",
+                "Gemfile",
+                "composer.json",
+                "go.mod",
+                "Cargo.toml"
+            ],
+            "exclude": [
+                "node_modules/**",
+                ".git/**",
+                "__pycache__/**",
+                "*.pyc",
+                "*.pyo",
+                "*.pyd",
+                ".pytest_cache/**",
+                "build/**",
+                "dist/**",
+                "vendor/**"
+            ]
+        }
+    ],
+    "execution": {
+        "type": "sync",
+        "timeout": 120,
+        "priority": 10,
+        "blocking": true,
+        "command": "compliance-sentinel",
+        "args": [
+            "analyze",
+            "--type",
+            "comprehensive",
+            "--format",
+            "summary",
+            "${staged_files}"
+        ],
+        "environment": {
+            "COMPLIANCE_SENTINEL_MODE": "pre-commit",
+            "COMPLIANCE_SENTINEL_IDE": "kiro",
+            "COMPLIANCE_SENTINEL_STRICT": "true"
+        }
+    },
+    "feedback": {
+        "type": "blocking",
+        "format": "summary",
+        "block_on_critical": true,
+        "block_on_high": true,
+        "block_on_medium": false,
+        "show_summary": true,
+        "show_details": true
+    },
+    "configuration": {
+        "enabled": true,
+        "strict_mode": true,
+        "show_progress": true,
+        "cache_results": false,
+        "fail_fast": true,
+        "max_issues_total": 100
+    },
+    "thresholds": {
+        "critical": 0,
+        "high": 5,
+        "medium": 20,
+        "low": 50,
+        "max_total_score": 200
+    },
+    "metadata": {
+        "category": "security",
+        "tags": [
+            "security",
+            "compliance",
+            "pre-commit",
+            "git"
+        ],
+        "documentation": "https://compliance-sentinel.readthedocs.io/hooks/pre-commit",
+        "support": "https://github.com/compliance-sentinel/compliance-sentinel/issues"
+    }
+}

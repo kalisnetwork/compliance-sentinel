@@ -1,0 +1,197 @@
+# Compliance Sentinel Configuration Template
+# This file contains all available configuration options with their default values
+
+project_name: "my-project"
+version: "1.0.0"
+description: "Compliance Sentinel configuration for my project"
+
+# File pattern configuration
+file_patterns:
+  # Files to include in analysis
+  included_patterns:
+    - "*.py"
+    - "*.js"
+    - "*.ts"
+    - "*.java"
+    - "*.go"
+    - "*.php"
+    - "*.rb"
+    - "*.cs"
+    - "*.cpp"
+    - "*.c"
+    - "*.h"
+    - "*.hpp"
+    - "*.scala"
+    - "*.kt"
+    - "*.swift"
+  
+  # Files to exclude from analysis
+  excluded_patterns:
+    - "*.pyc"
+    - "*.pyo"
+    - "*.pyd"
+    - "__pycache__/*"
+    - ".git/*"
+    - "node_modules/*"
+    - ".pytest_cache/*"
+    - ".coverage"
+    - "*.log"
+    - "*.tmp"
+  
+  # Directories to exclude
+  excluded_directories:
+    - ".git"
+    - "__pycache__"
+    - "node_modules"
+    - ".pytest_cache"
+    - "venv"
+    - ".venv"
+    - "env"
+    - ".env"
+    - "build"
+    - "dist"
+    - ".tox"
+    - ".coverage"
+  
+  # Maximum file size to analyze (in MB)
+  max_file_size_mb: 10.0
+  
+  # Binary file extensions to skip
+  binary_file_extensions:
+    - ".exe"
+    - ".dll"
+    - ".so"
+    - ".dylib"
+    - ".bin"
+    - ".img"
+    - ".iso"
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".pdf"
+    - ".zip"
+    - ".tar"
+    - ".gz"
+
+# Severity thresholds for blocking analysis
+severity_thresholds:
+  # Block if more than N issues of each severity
+  critical_threshold: 0    # Block on any critical issues
+  high_threshold: 5        # Block if more than 5 high issues
+  medium_threshold: 20     # Block if more than 20 medium issues
+  low_threshold: 50        # Block if more than 50 low issues
+  
+  # Scoring system for total impact
+  critical_score: 100      # Points per critical issue
+  high_score: 25          # Points per high issue
+  medium_score: 5         # Points per medium issue
+  low_score: 1            # Points per low issue
+  max_total_score: 200    # Block if total score exceeds this
+
+# Custom analysis rules
+custom_rules:
+  - rule_id: "CUSTOM-001"
+    name: "No TODO comments in production"
+    description: "TODO comments should not be present in production code"
+    severity: "low"
+    enabled: true
+    pattern: "#\\s*TODO|//\\s*TODO|/\\*\\s*TODO"
+    file_patterns:
+      - "*.py"
+      - "*.js"
+      - "*.ts"
+      - "*.java"
+    custom_message: "Remove TODO comments before production deployment"
+    remediation_guidance: "Complete the TODO item or create a proper issue tracker entry"
+    references: []
+  
+  - rule_id: "CUSTOM-002"
+    name: "No debug print statements"
+    description: "Debug print statements should not be present in production code"
+    severity: "medium"
+    enabled: true
+    pattern: "print\\s*\\(.*debug|console\\.log\\s*\\(.*debug"
+    file_patterns:
+      - "*.py"
+      - "*.js"
+      - "*.ts"
+    custom_message: "Remove debug print statements"
+    remediation_guidance: "Use proper logging instead of print statements"
+    references: []
+
+# MCP server configurations
+mcp_servers:
+  - server_name: "nvd-vulnerability-db"
+    endpoint_url: "https://services.nvd.nist.gov/rest/json/cves/2.0"
+    api_key: null
+    timeout_seconds: 30
+    max_retries: 3
+    rate_limit_requests: 50
+    rate_limit_window: 60
+    enabled: true
+    verify_ssl: true
+    custom_headers: {}
+
+# System configuration
+system_config:
+  # Enable/disable components
+  hooks_enabled: true
+  ide_feedback_enabled: true
+  summary_reports_enabled: true
+  
+  # Analysis settings
+  analysis_timeout: 60
+  max_concurrent_analyses: 3
+  
+  # File patterns for analysis
+  file_patterns:
+    - "*.py"
+    - "*.js"
+    - "*.ts"
+    - "*.java"
+  
+  excluded_directories:
+    - ".git"
+    - "__pycache__"
+    - "node_modules"
+  
+  # Logging configuration
+  log_level: "INFO"
+  log_file: null
+  
+  # Cache settings
+  cache_enabled: true
+  cache_ttl_seconds: 3600
+
+# Hook settings
+hook_settings:
+  # File patterns that trigger hooks
+  enabled_file_patterns:
+    - "*.py"
+    - "*.js"
+    - "*.ts"
+    - "*.java"
+    - "*.go"
+  
+  # Directories to exclude from hook processing
+  excluded_directories:
+    - ".git"
+    - "__pycache__"
+    - "node_modules"
+    - ".pytest_cache"
+    - "venv"
+    - ".venv"
+  
+  # Hook behavior settings
+  debounce_delay: 1.0      # Seconds to wait before processing repeated events
+  async_processing: true    # Process hooks asynchronously
+  analysis_timeout: 30     # Timeout for hook-triggered analysis
+  
+  # Watch directories for file changes
+  watch_directories:
+    - "."
+
+# Metadata (automatically managed)
+created_at: "2025-01-13T00:00:00"
+updated_at: "2025-01-13T00:00:00"

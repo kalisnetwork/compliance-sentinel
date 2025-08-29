@@ -1,0 +1,187 @@
+# Security Gate Configuration Template
+# This file defines the security gate rules for CI/CD pipelines
+
+# Basic configuration
+enabled: true
+fail_on_error: true
+
+# Severity thresholds - block deployment based on issue severity
+block_on_critical: true
+block_on_high: true
+block_on_medium: false
+block_on_low: false
+
+# Issue count limits - maximum allowed issues per severity
+max_critical_issues: 0
+max_high_issues: 5
+max_medium_issues: 20
+max_low_issues: 50
+
+# Custom rules for specific security categories
+rules:
+  - name: "Hardcoded Secrets"
+    severity_threshold: "HIGH"
+    max_issues: 0
+    categories: ["HARDCODED_SECRETS"]
+    action: "block"
+    enabled: true
+  
+  - name: "SQL Injection"
+    severity_threshold: "MEDIUM"
+    max_issues: 0
+    categories: ["INJECTION"]
+    action: "block"
+    enabled: true
+  
+  - name: "Cross-Site Scripting"
+    severity_threshold: "MEDIUM"
+    max_issues: 2
+    categories: ["XSS"]
+    action: "warn"
+    enabled: true
+  
+  - name: "Insecure Cryptography"
+    severity_threshold: "HIGH"
+    max_issues: 1
+    categories: ["INSECURE_CRYPTO"]
+    action: "block"
+    enabled: true
+  
+  - name: "Authentication Issues"
+    severity_threshold: "HIGH"
+    max_issues: 0
+    categories: ["AUTHENTICATION"]
+    action: "block"
+    enabled: true
+
+# File and category exclusions
+excluded_files:
+  - "*.test.js"
+  - "*.spec.py"
+  - "test_*.py"
+  - "**/tests/**"
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "*.min.js"
+  - "*.min.css"
+
+excluded_categories: []
+
+# Reporting configuration
+generate_report: true
+report_format: "json"  # json, xml, html, sarif
+report_path: "security-report"
+
+# Framework-specific configurations
+frameworks:
+  # Enable compliance framework checks
+  soc2: true
+  pci_dss: true
+  hipaa: false
+  gdpr: true
+  iso_27001: false
+
+# Language-specific settings
+languages:
+  javascript:
+    enabled: true
+    frameworks: ["react", "vue", "angular", "node"]
+  
+  python:
+    enabled: true
+    frameworks: ["django", "flask", "fastapi"]
+  
+  java:
+    enabled: true
+    frameworks: ["spring", "struts"]
+  
+  csharp:
+    enabled: true
+    frameworks: ["aspnet", "mvc"]
+  
+  go:
+    enabled: true
+    frameworks: ["gin", "echo"]
+  
+  rust:
+    enabled: true
+    frameworks: ["actix", "rocket"]
+  
+  php:
+    enabled: true
+    frameworks: ["laravel", "symfony", "wordpress"]
+
+# CI/CD platform specific settings
+ci_cd:
+  # Jenkins specific settings
+  jenkins:
+    create_junit_report: true
+    create_html_report: true
+    set_build_status: true
+    notify_on_failure: true
+  
+  # GitHub Actions specific settings
+  github_actions:
+    upload_sarif: true
+    create_pr_comment: true
+    create_check_run: true
+    set_job_summary: true
+  
+  # GitLab CI specific settings
+  gitlab_ci:
+    create_security_report: true
+    create_code_quality_report: true
+    create_pages_report: true
+    create_mr_note: true
+  
+  # Azure DevOps specific settings
+  azure_devops:
+    create_test_results: true
+    create_work_items: false
+    publish_security_logs: true
+    set_pipeline_variables: true
+
+# Notification settings
+notifications:
+  email:
+    enabled: false
+    recipients: []
+    on_failure: true
+    on_warning: false
+  
+  slack:
+    enabled: false
+    webhook_url: ""
+    channel: "#security"
+    on_failure: true
+    on_warning: true
+  
+  teams:
+    enabled: false
+    webhook_url: ""
+    on_failure: true
+    on_warning: false
+
+# Advanced settings
+advanced:
+  # Parallel processing
+  max_workers: 4
+  
+  # Timeout settings (in seconds)
+  scan_timeout: 300
+  file_timeout: 30
+  
+  # Memory limits
+  max_memory_mb: 1024
+  
+  # Caching
+  enable_cache: true
+  cache_duration_hours: 24
+  
+  # ML threat detection
+  enable_ml_detection: true
+  ml_confidence_threshold: 0.7
+  
+  # Incremental scanning
+  enable_incremental: true
+  baseline_branch: "main"

@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  compliance-sentinel:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: compliance-sentinel
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Load environment variables from file
+      - COMPLIANCE_SENTINEL_ENVIRONMENT=production
+      - COMPLIANCE_SENTINEL_SERVICE_NAME=compliance-sentinel
+      - COMPLIANCE_SENTINEL_MCP_HOST=0.0.0.0
+      - COMPLIANCE_SENTINEL_MCP_PORT=8000
+    env_file:
+      - .env
+    volumes:
+      # Mount configuration directory
+      - ./config:/app/config:ro
+      # Mount logs directory
+      - ./logs:/var/log/compliance-sentinel
+      # Mount cache directory (optional)
+      - ./cache:/app/cache
+    networks:
+      - compliance-network
+    depends_on:
+      - redis
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: compliance-sentinel-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - compliance-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: compliance-sentinel-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: compliance_sentinel
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - compliance-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: compliance-sentinel-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - compliance-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: compliance-sentinel-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - compliance-network
+    depends_on:
+      - prometheus
+
+networks:
+  compliance-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

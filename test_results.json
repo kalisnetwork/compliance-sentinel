@@ -1,0 +1,22 @@
+{
+  "request_id": "analysis_1756125948762",
+  "success": true,
+  "files_analyzed": 1,
+  "file_paths": [
+    "test_sample_code.py"
+  ],
+  "total_issues": 3,
+  "severity_breakdown": {
+    "critical": 0,
+    "high": 2,
+    "medium": 1,
+    "low": 0
+  },
+  "policy_violations": 6,
+  "dependency_vulnerabilities": 0,
+  "has_blocking_issues": true,
+  "analysis_duration_ms": 0.6020069122314453,
+  "feedback_generated": true,
+  "error_message": null,
+  "created_at": "2025-08-25T12:45:48.763640"
+}

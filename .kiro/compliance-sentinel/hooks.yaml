@@ -1,0 +1,14 @@
+analysis_timeout: 60
+async_processing: true
+batch_size: 10
+debounce_delay: 0.5
+enabled_file_patterns:
+- '*.py'
+- '*.js'
+- '*.ts'
+excluded_directories:
+- node_modules
+- __pycache__
+- .git
+- .venv
+- venv

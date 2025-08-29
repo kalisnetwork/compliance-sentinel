@@ -1,0 +1,10 @@
+[compliance_sentinel.analyzers]
+bandit = compliance_sentinel.analyzers.bandit_analyzer:BanditAnalyzer
+semgrep = compliance_sentinel.analyzers.semgrep_analyzer:SemgrepAnalyzer
+
+[compliance_sentinel.scanners]
+safety = compliance_sentinel.scanners.dependency_scanner:DependencyScanner
+
+[console_scripts]
+compliance-sentinel = compliance_sentinel.cli:cli
+cs = compliance_sentinel.cli:cli
