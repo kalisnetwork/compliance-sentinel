@@ -228,4 +228,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Advanced ML-based vulnerability detection
 - [ ] Custom rule creation UI
 - [ ] Integration with CI/CD pipelines
-- [ ] Compliance reporting and dashboards
+- [ ] Compliance reporting and dashboards# compliance-sentinel
