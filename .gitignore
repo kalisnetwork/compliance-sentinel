@@ -40,7 +40,7 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-.cache
+.cache/
 nosetests.xml
 coverage.xml
 *.cover
@@ -66,6 +66,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*_venv/
+compliance_sentinel_venv/
 
 # Spyder IDE
 .spyderproject
@@ -103,3 +105,37 @@ cython_debug/
 # Windows
 Thumbs.db
 desktop.ini
+
+# Logs and temporary files
+logs/
+*.log
+analysis_results.json
+test_results.json
+
+# Test files (keep main test directory but exclude individual test files in root)
+comprehensive_security_test.py
+final_test.py
+fix_syntax_errors.py
+minimal_test.py
+quick_fix.py
+simple_test.py
+test_basic_functionality.py
+test_comprehensive_workflow.py
+test_crypto_analyzer.py
+test_integration.py
+test_sample_code.py
+test_security_fresh.py
+test_security_issues.py
+test_security.py
+test_system_functionality.py
+test_working_components.py
+validate_system.py
+
+# Documentation files (keep main docs but exclude redundant ones)
+documentation.md
+FINAL_TEST_REPORT.md
+TASK_10_IMPLEMENTATION_SUMMARY.md
+
+# Test runners in root
+run_comprehensive_tests.py
+run_tests.py
