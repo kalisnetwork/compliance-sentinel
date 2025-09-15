@@ -569,3 +569,44 @@ def timer(collector: MetricsCollector, metric_name: str, tags: Optional[Dict[str
                 return func(*args, **kwargs)
         return wrapper
     return decorator
+
+
+class Timer:
+    """Timer class for measuring execution time."""
+    
+    def __init__(self, name: str, collector: Optional[MetricsCollector] = None, tags: Optional[Dict[str, str]] = None):
+        """Initialize timer."""
+        self.name = name
+        self.collector = collector
+        self.tags = tags or {}
+        self.start_time = None
+        self.end_time = None
+    
+    def start(self):
+        """Start the timer."""
+        self.start_time = time.time()
+        return self
+    
+    def stop(self):
+        """Stop the timer and record metric if collector is provided."""
+        self.end_time = time.time()
+        if self.collector and self.start_time:
+            duration = self.end_time - self.start_time
+            self.collector.record_timer(self.name, duration, self.tags)
+        return self
+    
+    def elapsed(self) -> Optional[float]:
+        """Get elapsed time."""
+        if self.start_time and self.end_time:
+            return self.end_time - self.start_time
+        elif self.start_time:
+            return time.time() - self.start_time
+        return None
+    
+    def __enter__(self):
+        """Context manager entry."""
+        return self.start()
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit."""
+        self.stop()

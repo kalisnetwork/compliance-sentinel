@@ -1,0 +1,23 @@
+{
+    "mcpServers": {
+        "compliance-sentinel": {
+            "command": "python",
+            "args": [
+                "mcp_server.py"
+            ],
+            "env": {
+                "PYTHONPATH": ".",
+                "LOG_LEVEL": "INFO"
+            },
+            "disabled": false,
+            "autoApprove": [
+                "analyze_code",
+                "analyze_file",
+                "analyze_directory",
+                "check_dependencies",
+                "get_security_recommendations",
+                "validate_compliance"
+            ]
+        }
+    }
+}

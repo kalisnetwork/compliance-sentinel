@@ -19,6 +19,7 @@ The Compliance Sentinel transforms security from a reactive process to a proacti
 - 💡 **Intelligent Feedback** - Actionable remediation suggestions
 - ⚡ **Performance Optimized** - Asynchronous processing with caching
 - 🔧 **Highly Configurable** - Customizable rules and thresholds
+- 🔌 **MCP Integration** - Model Context Protocol server for IDE integration
 
 ## Quick Start
 
@@ -62,7 +63,12 @@ Use of external libraries must be validated against known vulnerabilities.
 
 3. **Start MCP Server**:
 ```bash
-cs-server --host localhost --port 8000
+python run_mcp_server.py
+```
+
+Or directly:
+```bash
+python mcp_server.py
 ```
 
 4. **Configure Kiro Agent Hook** (automatically done during init)
@@ -118,25 +124,67 @@ enable_external_intelligence: true
 analysis_timeout: 300
 ```
 
+## MCP Server Integration
+
+The Compliance Sentinel includes a Model Context Protocol (MCP) server that integrates with IDEs like Kiro to provide real-time security analysis tools.
+
+### MCP Configuration
+
+Add this configuration to your IDE's MCP settings (e.g., `.kiro/settings/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "compliance-sentinel": {
+      "command": "python",
+      "args": ["run_mcp_server.py"],
+      "env": {
+        "PYTHONPATH": ".",
+        "LOG_LEVEL": "INFO"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "analyze_code",
+        "analyze_file",
+        "analyze_directory",
+        "check_dependencies",
+        "get_security_recommendations",
+        "validate_compliance"
+      ]
+    }
+  }
+}
+```
+
+### Available MCP Tools
+
+- **analyze_code**: Analyze code snippets for security issues
+- **analyze_file**: Analyze specific files
+- **analyze_directory**: Analyze entire directories recursively
+- **check_dependencies**: Scan project dependencies for vulnerabilities
+- **get_security_recommendations**: Get actionable remediation advice
+- **validate_compliance**: Check against compliance frameworks (OWASP, CWE, NIST, etc.)
+
+See [MCP_README.md](MCP_README.md) for detailed MCP server documentation.
+
 ## Usage
 
 ### Command Line Interface
 
 ```bash
-# Initialize project
-compliance-sentinel init
+# Start MCP server (recommended)
+python run_mcp_server.py
 
-# Run analysis on specific file
-compliance-sentinel analyze path/to/file.py
+# Or start MCP server directly
+python mcp_server.py
 
-# Run full project scan
-compliance-sentinel scan
-
-# Validate configuration
-compliance-sentinel config validate
-
-# Start MCP server
-cs-server --port 8000
+# The MCP server provides tools for:
+# - analyze_code: Analyze code snippets
+# - analyze_file: Analyze specific files  
+# - analyze_directory: Analyze entire directories
+# - check_dependencies: Scan for vulnerable dependencies
+# - get_security_recommendations: Get remediation advice
+# - validate_compliance: Check against compliance frameworks
 ```
 
 ### Programmatic Usage
