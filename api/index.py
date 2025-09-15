@@ -11,10 +11,33 @@ from urllib.parse import urlparse, parse_qs
 SECURITY_PATTERNS = {
     "hardcoded_credentials": {
         "patterns": [
-            r"password\s*=\s*[\"'][^\"']+[\"']",
-            r"secret\s*=\s*[\"'][^\"']+[\"']",
-            r"api_key\s*=\s*[\"'][^\"']+[\"']",
-            r"token\s*=\s*[\"'][^\"']+[\"']"
+            # Variable assignment patterns
+            r"password\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"pass\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"secret\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"api_key\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"apikey\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"token\s*[=:]\s*[\"'][^\"']+[\"']",
+            r"key\s*[=:]\s*[\"'][^\"']+[\"']",
+            
+            # JavaScript object property patterns (double quotes)
+            r'"password"\s*:\s*"[^"]+"',
+            r'"pass"\s*:\s*"[^"]+"',
+            r'"secret"\s*:\s*"[^"]+"',
+            r'"api_key"\s*:\s*"[^"]+"',
+            r'"apiKey"\s*:\s*"[^"]+"',
+            r'"token"\s*:\s*"[^"]+"',
+            
+            # JavaScript object property patterns (single quotes)
+            r"'password'\s*:\s*'[^']+'",
+            r"'pass'\s*:\s*'[^']+'",
+            r"'secret'\s*:\s*'[^']+'",
+            r"'api_key'\s*:\s*'[^']+'",
+            r"'apiKey'\s*:\s*'[^']+'",
+            r"'token'\s*:\s*'[^']+'",
+            
+            # Database connection strings
+            r"[\"'][^\"']*://[^:]+:[^@]+@[^\"']+[\"']"
         ],
         "severity": "HIGH",
         "description": "Hardcoded credentials detected",
@@ -26,7 +49,11 @@ SECURITY_PATTERNS = {
             r"INSERT.*\+.*", 
             r"UPDATE.*\+.*",
             r"DELETE.*\+.*",
-            r"query.*\+.*user"
+            r"query.*\+.*user",
+            r"SELECT.*\$\{.*\}",  # Template literals
+            r"INSERT.*\$\{.*\}",
+            r"UPDATE.*\$\{.*\}",
+            r"DELETE.*\$\{.*\}"
         ],
         "severity": "HIGH",
         "description": "Potential SQL injection vulnerability",
@@ -37,11 +64,37 @@ SECURITY_PATTERNS = {
             r"os\.system\(",
             r"subprocess.*shell\s*=\s*True",
             r"eval\(",
-            r"exec\("
+            r"exec\(",
+            r"child_process\.exec\(",  # Node.js
+            r"Runtime\.getRuntime\(\)\.exec\("  # Java
         ],
         "severity": "HIGH",
         "description": "Potential command injection vulnerability",
         "remediation": "Avoid shell=True and validate all inputs"
+    },
+    "weak_cryptography": {
+        "patterns": [
+            r"hashlib\.md5\(",
+            r"hashlib\.sha1\(",
+            r"crypto\.createHash\([\"']md5[\"']\)",
+            r"crypto\.createHash\([\"']sha1[\"']\)",
+            r"MessageDigest\.getInstance\([\"']MD5[\"']\)",
+            r"MessageDigest\.getInstance\([\"']SHA1[\"']\)"
+        ],
+        "severity": "MEDIUM",
+        "description": "Weak cryptographic function detected",
+        "remediation": "Use SHA-256 or stronger cryptographic functions"
+    },
+    "xss_vulnerability": {
+        "patterns": [
+            r"document\.innerHTML\s*=",
+            r"\.innerHTML\s*=\s*[^;]+\+",
+            r"document\.write\(",
+            r"eval\s*\(\s*[^)]*user"
+        ],
+        "severity": "HIGH",
+        "description": "Potential XSS vulnerability detected",
+        "remediation": "Use safe DOM manipulation methods and sanitize user inputs"
     }
 }
 
