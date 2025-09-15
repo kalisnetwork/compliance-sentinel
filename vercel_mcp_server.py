@@ -22,7 +22,15 @@ def analyze_code_via_vercel(code: str, language: str = "python") -> Dict[str, An
         )
         
         if response.status_code == 200:
-            return response.json()
+            result = response.json()
+            # Ensure we have the expected structure
+            if result.get("success") and "analysis" in result:
+                return result
+            else:
+                return {
+                    "success": False,
+                    "error": "Invalid response format from API"
+                }
         else:
             return {
                 "success": False,
@@ -33,6 +41,11 @@ def analyze_code_via_vercel(code: str, language: str = "python") -> Dict[str, An
         return {
             "success": False,
             "error": f"Network error: {str(e)}"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Unexpected error: {str(e)}"
         }
 
 def format_vercel_result(vercel_response: Dict[str, Any]) -> str:
