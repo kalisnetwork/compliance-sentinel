@@ -61,13 +61,13 @@ Never hardcode sensitive credentials. All secrets must be loaded from environmen
 Use of external libraries must be validated against known vulnerabilities.
 ```
 
-3. **Deploy MCP Server (FREE)**:
+3. **Deploy MCP Server (100% FREE)**:
 
-**🚀 One-Click Deploy Options:**
+**🔺 Vercel (Recommended - Always Free):**
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kalisnetwork/compliance-sentinel)
 
+**🚀 Other Free Options:**
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kalisnetwork/compliance-sentinel)
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/kalisnetwork/compliance-sentinel)
 
 **Or run locally:**
 ```bash
@@ -76,7 +76,7 @@ python run_mcp_server.py
 python web_mcp_server.py
 ```
 
-See [HEROKU_DEPLOY.md](HEROKU_DEPLOY.md) for Heroku deployment guide!
+See [VERCEL_DEPLOY.md](VERCEL_DEPLOY.md) for detailed Vercel deployment guide!
 
 4. **Configure Kiro Agent Hook** (automatically done during init)
 

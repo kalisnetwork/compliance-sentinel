@@ -1,0 +1,25 @@
+{
+    "version": 2,
+    "name": "compliance-sentinel-mcp",
+    "builds": [
+        {
+            "src": "api/index.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "api/index.py"
+        }
+    ],
+    "env": {
+        "PYTHONPATH": ".",
+        "LOG_LEVEL": "INFO"
+    },
+    "functions": {
+        "api/index.py": {
+            "maxDuration": 30
+        }
+    }
+}
