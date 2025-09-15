@@ -5,18 +5,11 @@ This runs as a serverless function on Vercel.
 
 import json
 import logging
-import os
-import sys
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+import re
+from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-
-# Add parent directory to Python path for imports
-current_dir = Path(__file__).parent.parent.absolute()
-sys.path.insert(0, str(current_dir))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Simple security analysis patterns
+# Security analysis patterns
 SECURITY_PATTERNS = {
     "hardcoded_credentials": {
         "patterns": [
@@ -100,8 +93,6 @@ SECURITY_PATTERNS = {
 
 def analyze_code_patterns(code: str) -> List[Dict[str, Any]]:
     """Analyze code for security patterns."""
-    import re
-    
     issues = []
     lines = code.split('\n')
     
@@ -158,8 +149,7 @@ async def list_tools():
                 "description": "Analyze code for security vulnerabilities",
                 "parameters": {
                     "code": "string (required) - Code to analyze",
-                    "language": "string (optional) - Programming language",
-                    "compliance_frameworks": "array (optional) - Frameworks to check"
+                    "language": "string (optional) - Programming language"
                 }
             },
             {
@@ -229,41 +219,11 @@ async def validate_compliance(request: Request):
         # Analyze code first
         issues = analyze_code_patterns(code)
         
-        # Map issues to compliance framework
-        framework_mapping = {
-            "owasp-top-10": {
-                "hardcoded_credentials": "A07:2021 – Identification and Authentication Failures",
-                "sql_injection": "A03:2021 – Injection",
-                "command_injection": "A03:2021 – Injection", 
-                "xss_vulnerability": "A03:2021 – Injection",
-                "weak_crypto": "A02:2021 – Cryptographic Failures"
-            },
-            "cwe-top-25": {
-                "hardcoded_credentials": "CWE-798: Use of Hard-coded Credentials",
-                "sql_injection": "CWE-89: SQL Injection",
-                "command_injection": "CWE-78: OS Command Injection",
-                "xss_vulnerability": "CWE-79: Cross-site Scripting",
-                "weak_crypto": "CWE-327: Use of a Broken Cryptographic Algorithm"
-            }
-        }
-        
         # Calculate compliance score
         total_checks = 10  # Mock total compliance checks
         failed_checks = len(issues)
         passed_checks = max(0, total_checks - failed_checks)
         score = passed_checks / total_checks if total_checks > 0 else 1.0
-        
-        # Map issues to framework violations
-        violations = []
-        mapping = framework_mapping.get(framework, {})
-        for issue in issues:
-            violation = mapping.get(issue["type"], f"Unknown violation: {issue['type']}")
-            violations.append({
-                "rule": violation,
-                "description": issue["description"],
-                "line": issue["line"],
-                "severity": issue["severity"]
-            })
         
         return {
             "success": True,
@@ -273,8 +233,8 @@ async def validate_compliance(request: Request):
                 "percentage": f"{score:.1%}",
                 "passed": passed_checks,
                 "total": total_checks,
-                "violations": violations,
-                "recommendations": [issue["remediation"] for issue in issues]
+                "issues": len(issues),
+                "recommendations": [issue["remediation"] for issue in issues[:3]]
             },
             "message": f"Compliance score: {score:.1%} for {framework}"
         }
@@ -290,27 +250,24 @@ async def demo_page():
     """Demo page with examples."""
     return {
         "demo": "Compliance Sentinel MCP Server - Vercel Edition",
-        "live_url": "https://your-app.vercel.app",
         "examples": {
             "analyze_vulnerable_code": {
                 "description": "Analyze code with security issues",
                 "method": "POST",
                 "url": "/analyze",
                 "example_request": {
-                    "code": "password = \"hardcoded_secret_123\"\nquery = \"SELECT * FROM users WHERE id = \" + user_id\nos.system(user_input)",
+                    "code": "password = 'hardcoded_secret_123'\\nquery = 'SELECT * FROM users WHERE id = ' + user_id\\nos.system(user_input)",
                     "language": "python"
-                },
-                "curl_example": "curl -X POST https://your-app.vercel.app/analyze -H 'Content-Type: application/json' -d '{\"code\":\"password = \\\"secret123\\\"\",\"language\":\"python\"}'"
+                }
             },
             "validate_compliance": {
                 "description": "Check compliance against frameworks",
                 "method": "POST", 
                 "url": "/validate",
                 "example_request": {
-                    "code": "password = \"hardcoded_secret_123\"",
+                    "code": "password = 'hardcoded_secret_123'",
                     "framework": "owasp-top-10"
-                },
-                "curl_example": "curl -X POST https://your-app.vercel.app/validate -H 'Content-Type: application/json' -d '{\"code\":\"password = \\\"secret123\\\"\",\"framework\":\"owasp-top-10\"}'"
+                }
             }
         },
         "supported_patterns": list(SECURITY_PATTERNS.keys()),
