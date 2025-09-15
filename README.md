@@ -23,11 +23,46 @@ The Compliance Sentinel transforms security from a reactive process to a proacti
 
 ## Quick Start
 
-### Installation
+### 🚀 MCP Server Setup (Recommended for Teams)
+
+**For Kiro IDE users - 2-minute setup:**
 
 ```bash
 # Clone the repository
-git clone https://github.com/compliance-sentinel/compliance-sentinel.git
+git clone https://github.com/kalisnetwork/compliance-sentinel.git
+cd compliance-sentinel
+
+# Install requests (only dependency needed)
+pip install requests
+
+# Add to your .kiro/settings/mcp.json:
+{
+  "mcpServers": {
+    "compliance-sentinel": {
+      "command": "python3",
+      "args": ["vercel_mcp_server.py"],
+      "disabled": false,
+      "autoApprove": ["analyze_code"]
+    }
+  }
+}
+```
+
+**✅ That's it!** Your MCP server now uses our Vercel API at `https://compliance-sentinel.vercel.app/`
+
+**Benefits:**
+- 🌐 **Cloud-powered** - Always up-to-date security patterns
+- 👥 **Team-ready** - Same analysis for all developers  
+- ⚡ **Zero setup** - No local dependencies or configuration
+- 🔄 **Auto-updates** - Latest vulnerability detection
+
+See [MCP_VERCEL_SETUP.md](./MCP_VERCEL_SETUP.md) for detailed instructions.
+
+### 🏠 Local Installation (Advanced Users)
+
+```bash
+# Clone the repository
+git clone https://github.com/kalisnetwork/compliance-sentinel.git
 cd compliance-sentinel
 
 # Create virtual environment (Python 3.11+ required)

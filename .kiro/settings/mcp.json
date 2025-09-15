@@ -3,7 +3,7 @@
         "compliance-sentinel": {
             "command": "python3",
             "args": [
-                "simple_mcp_server.py"
+                "vercel_mcp_server.py"
             ],
             "disabled": false,
             "autoApprove": [
