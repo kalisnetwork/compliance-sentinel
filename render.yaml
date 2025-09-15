@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: compliance-sentinel-mcp
+    env: python
+    buildCommand: pip install -r requirements-minimal.txt
+    startCommand: python web_mcp_server.py
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: LOG_LEVEL
+        value: INFO
