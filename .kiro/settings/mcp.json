@@ -1,0 +1,17 @@
+{
+    "mcpServers": {
+        "compliance-sentinel": {
+            "command": "python3",
+            "args": [
+                "mcp_server.py"
+            ],
+            "disabled": false,
+            "autoApprove": [
+                "analyze_code",
+                "validate_compliance",
+                "get_security_patterns",
+                "get_compliance_frameworks"
+            ]
+        }
+    }
+}
